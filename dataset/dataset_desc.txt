@@ -1,0 +1,14 @@
+Heart Attack Dataset
+dataset link: https://data.mendeley.com/datasets/wmhctcrt5v/1
+
+Published: 23 November 2022 | Version 1 | DOI: 10.17632/wmhctcrt5v.1
+Contributors:Tarik A. Rashid, Bryar Hassan
+
+Institutions: University of Kurdistan Hewler
+Categories: Medicine, Heart Disease
+
+citation:
+Rashid, Tarik A.; Hassan, Bryar (2022), “Heart Attack Dataset”, Mendeley Data, V1, doi: 10.17632/wmhctcrt5v.1
+
+Description
+The heart attack datasets were collected at Zheen hospital in Erbil, Iraq, from January 2019 to May 2019. The attributes of this dataset are: age, gender, heart rate, systolic blood pressure, diastolic blood pressure, blood sugar, ck-mb and troponin with negative or positive output. According to the provided information, the medical dataset classifies either heart attack or none. The gender column in the data is normalized: the male is set to 1 and the female to 0. The glucose column is set to 1 if it is > 120; otherwise, 0. As for the output, positive is set to 1 and negative to 0. 

@@ -1,0 +1,7 @@
+[Evaluation Table]
+------------------
+Attributes: (Model Name, Accuracy	Precision (True)	Precision (False)	Recall (True)	Recall (False)	F1 Score (True)	F1 Score (False)	ROC-AUC Score)
+The range is between 0.0 ~ 1.0 / 0.0% ~ 100.0%.
+
+1. "train_evaluation.csv": Evaluation Table for each model by using training dataset
+2. "test_evaluation.csv": Evaluation Table for each model by using testing dataset

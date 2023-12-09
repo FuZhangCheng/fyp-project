@@ -1,1 +1,10 @@
+[Model]
+-------
 
+1. "logistic.pkl": Logistic Regression Model
+2. "svm.pkl": SVM Model
+3. "knn.pkl": K-Nearest Neighbour Model
+4. "nb.pkl": Naive Bayes Model
+5. "dt.pkl": Decision Tree Model
+6. "rf.pkl": Random Forest Model
+7. "mlp.pkl": Multi-Layer Perceptron(MLP) / Artificial Neural Network(ANN) Model

@@ -124,14 +124,11 @@ class DataPreprocessor:
         Load a DataPreprocessor object from a file.
 
         Parameters:
-        - file_path (str): File path from which to load the object.
+        - file_path (str) or other file object: File path from which to load the object.
 
         Outputs:
         - None
         """
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File '{file_path}' not found. Please provide a valid file path.")
-
         # Load the preprocessor object
         loaded_preprocessor = joblib.load(file_path)
 

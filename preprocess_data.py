@@ -6,6 +6,15 @@ import joblib, os
 
 class DataPreprocessor:
     def __init__(self, data=None, remove_columns=None, numerical_columns=None, categorical_columns=None):
+        """
+        Constructor for DataPreprocessor class.
+
+        Parameters:
+        - data (pd.DataFrame): Input data in tabular form.
+        - remove_columns (list): Columns to be removed from the data.
+        - numerical_columns (list): Numerical columns for preprocessing.
+        - categorical_columns (list): Categorical columns for preprocessing.
+        """
         self.data = data
         self.remove_columns = remove_columns
         self.numerical_columns = numerical_columns
@@ -15,7 +24,12 @@ class DataPreprocessor:
         self.column_transformer = None
 
     def fit_transform(self):
+        """
+        Fit and transform the input data using specified preprocessing steps.
 
+        Returns:
+        - pd.DataFrame: Transformed data with original columns.
+        """
         # Drop specified columns
         if self.remove_columns:
             self.data = self.data.drop(columns=self.remove_columns)
@@ -52,6 +66,15 @@ class DataPreprocessor:
         return transformed_data_with_original
 
     def transform(self, data=None):
+        """
+        Transform new data using the pre-fitted column transformer.
+
+        Parameters:
+        - data (pd.DataFrame, optional): New data to be transformed. If not provided, the original data is used.
+
+        Returns:
+        - np.ndarray: Transformed data.
+        """
         if data is None:
             data = self.data
 
@@ -80,6 +103,15 @@ class DataPreprocessor:
             raise ValueError("fit_transform must be called before transform")
     
     def save(self, file_path):
+        """
+        Save the DataPreprocessor object to a file using joblib.
+
+        Parameters:
+        - file_path (str): File path to save the object.
+
+        Outputs:
+        - None
+        """
         if self.column_transformer:
             # Save the preprocessor object
             joblib.dump(self, file_path)
@@ -88,6 +120,15 @@ class DataPreprocessor:
             print("fit_transform must be called before saving.")
     
     def load(self, file_path):
+        """
+        Load a DataPreprocessor object from a file.
+
+        Parameters:
+        - file_path (str): File path from which to load the object.
+
+        Outputs:
+        - None
+        """
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File '{file_path}' not found. Please provide a valid file path.")
 

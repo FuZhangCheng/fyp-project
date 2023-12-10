@@ -73,7 +73,7 @@ class DataPreprocessor:
             transformed_data = self.column_transformer.transform(data)
 
             # Concatenate the preprocessed data with the unprocessed columns
-            transformed_data = pd.concat([pd.DataFrame(transformed_data), self.data[original_columns]], axis=1)
+            transformed_data = pd.concat([pd.DataFrame(transformed_data), data[original_columns]], axis=1)
 
             return transformed_data
         else:

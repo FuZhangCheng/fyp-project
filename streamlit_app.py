@@ -1,14 +1,15 @@
-import pandas as pd, numpy as np
+import pandas as pd, numpy as np, pickle, joblib
 import matplotlib, klib, bokeh, seaborn as sns
 import matplotlib.pyplot as plt
 from bokeh.plotting import figure
 import streamlit as st
 import sklearn, imblearn, torch
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
 from preprocess_data import DataPreprocessor
+import urllib.request
+from io import BytesIO
 
 def data_preprocess(data, numerical_columns = None, categorical_columns = None):
     # 1. Standardize the range of numerical features
@@ -29,16 +30,35 @@ def data_preprocess(data, numerical_columns = None, categorical_columns = None):
 
     return data
 
+def save_or_load_model(filename_or_io, model=None, action='load'):
+    if action == 'save':
+        with open(filename_or_io, 'wb') as file:
+            pickle.dump(model, file)
+        print(f"Model saved to {filename_or_io}")
+
+    elif action == 'load':
+        if isinstance(filename_or_io, str):
+            with open(filename_or_io, 'rb') as file:
+                loaded_model = pickle.load(file)
+        elif isinstance(filename_or_io, BytesIO):
+            loaded_model = pickle.load(filename_or_io)
+        else:
+            raise ValueError("Invalid type for filename_or_io. Use str (file path) or BytesIO.")
+        
+        print(f"Model loaded from {filename_or_io}")
+        return loaded_model
+
+    else:
+        raise ValueError("Invalid action. Use 'save' or 'load.'")
+
 st.sidebar.title("Machine Learning in Data Classification")
 
 add_selectbox = st.sidebar.radio(
     "Menu",
-    ("Data Description", "Data Preprocessing (optional)", "PCA", "Train & Evaluate Model")
+    ("Data Description", "Data Preprocessing", "PCA", "Model Training & Evaluation", "Test the System")
 )
 
-data = pd.read_csv("Medicaldataset.csv")
-
-#data = pd.read_csv("https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/dataset/Medicaldataset.csv")
+data = pd.read_csv("https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/dataset/Medicaldataset.csv")
 
 if add_selectbox == "Data Description":
     st.title("Heart Disease Data Classification")
@@ -140,7 +160,7 @@ if add_selectbox == "Data Description":
         sns.heatmap(data_corr, annot=True, cmap=sns.color_palette("crest", as_cmap=True), ax = axes_corr)
         st.pyplot(fig_corr)
 
-elif add_selectbox == "Data Preprocessing (optional)":
+elif add_selectbox == "Data Preprocessing":
 
     st.header("3. Data Preprocessing")
 
@@ -225,30 +245,94 @@ elif add_selectbox == "PCA":
             plt.tight_layout()
             st.pyplot(fig_scatter)
 
-else:
-    st.header("4. Train Model")
+elif add_selectbox == "Model Training & Evaluation":
+    st.header("4. Model Training & Evaluation")
 
-    option = st.selectbox("Choose an algorithm to train model: ", options=["Logistic Regression", "SVM", "KNN", "Naive Bayes", "Decision Tree", "Random Forest", "Deep Learning (ANN)"])
+    st.subheader("Traning Evaluation (Evaluate by 80% training dataset)")
 
-    uploaded_file = st.file_uploader("Choose a CSV file: ", type = ['csv'])
+    train_table = pd.read_csv("https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/evaluation/train_evaluation.csv")
+    train_eval = train_table.copy()
+    columns_to_convert = train_eval.columns.difference(['Model'])
+    train_eval[columns_to_convert] = (train_eval[columns_to_convert] * 100).round(2).astype(str) + "%"
 
-    if uploaded_file is not None:
+    st.dataframe(train_eval)
 
-        data_train = pd.read_csv(uploaded_file)
+    st.subheader("Testing Evaluation (Evaluate by 20% testing dataset)")
 
-        st.table(data_train.head())
+    test_table = pd.read_csv("https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/evaluation/test_evaluation.csv")
+    test_eval = test_table.copy()
+    columns_to_convert = test_eval.columns.difference(['Model'])
+    test_eval[columns_to_convert] = (test_eval[columns_to_convert] * 100).round(2).astype(str) + "%"
 
-        y_feature = st.selectbox("Choose a target feature: ", options=data_train.columns)
-
-        X = data_train.drop(y_feature, axis = 1)
-        y = data_train[y_feature]
-
-        st.markdown("---")
-
-        st.subheader("Split into Training and Testing Dataset")
-
-        train_size = st.slider('The proportion of training dataset: ', 0.0, 1.0, 0.8)
-
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_size, random_state=42)
+    st.dataframe(test_eval)
 
     st.markdown("---")
+
+    st.subheader("Model Accuracy Comparison")
+
+    fig_line, axes_line = plt.subplots(nrows=1, ncols=1, figsize=(10, 5))
+    sns.lineplot(data=train_table, x="Model", y="Accuracy", ax = axes_line, color = "blue", label = "Training Accuracy")
+    sns.lineplot(data=test_table, x="Model", y="Accuracy", ax = axes_line, color = "red", label = "Testing Accuracy")
+    plt.tight_layout()
+    plt.grid(True)
+    st.pyplot(fig_line)
+
+else:
+    st.header("5. Test Model")
+
+    option = st.selectbox("Please a model to test system: ", options=["Logistic Regression", "SVM", "KNN", "Naive Bayes", "Decision Tree", "Random Forest", "Deep Learning (ANN)"])
+
+    model_dict = {
+        "Logistic Regression": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/logistic.pkl",
+        "SVM": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/svm.pkl", 
+        "KNN": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/knn.pkl",
+        "Naive Bayes": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/nb.pkl",
+        "Decision Tree": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/dt.pkl",
+        "Random Forest": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/rf.pkl",
+        "Deep Learning (ANN)": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/mlp.pkl"
+    }
+
+    age = st.slider('Enter your age(int): ', 0, 120, 20)
+    gender = {'Male': 1, 'Female': 0}[st.selectbox('Enter your gender: ', ('Male', 'Female'))]
+    heart_rate = int(st.text_input('Enter Heart Rate: ', '80'))
+    sys_blood_press = int(st.text_input('Enter Systolic blood pressure: ', '120'))
+    dias_blood_press = int(st.text_input('Enter Diastolic blood pressure: ', '80'))
+    bld_sgr = int(st.text_input('Enter Blood Sugar: ', '80'))
+    ck_mb = float(st.text_input('Enter CK-MB: ', '3.10'))
+    trop = float(st.text_input('Enter Troponin: ', '0.10'))
+
+    record = {
+        'Age': age,
+        "Gender": gender,
+        'Heart rate': heart_rate,
+        'Systolic blood pressure': sys_blood_press,
+        "Diastolic blood pressure": dias_blood_press,
+        "Blood sugar": bld_sgr,
+        "CK-MB": ck_mb,
+        "Troponin": trop
+    }
+
+    st.write(record)
+
+    # Load preprocess file
+    data_preprocess_file = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/data_preprocessing/preprocessing_1.joblib"
+    preprocessor = DataPreprocessor()
+    file_content = urllib.request.urlopen(data_preprocess_file).read()
+    preprocessor.load((BytesIO(file_content)))
+
+    # Preprocess record
+    preprocessed_record = preprocessor.transform(pd.DataFrame([record]))
+
+    st.text("Preprocessed data: ")
+    st.table(preprocessed_record)
+
+    predict_btn = st.button("Predict Data")
+
+    if predict_btn:
+        model_file_content = urllib.request.urlopen(model_dict[option]).read()
+        model = save_or_load_model(BytesIO(model_file_content), action='load')
+        result = model.predict(preprocessed_record)
+        if result == 1:
+            st.success("The Result is positive")
+        else:
+            st.error("The Result is negative.")

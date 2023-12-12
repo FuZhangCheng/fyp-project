@@ -1,0 +1,16 @@
+streamlit
+pandas
+numpy
+pickle
+joblib
+matplotlib
+klib
+bokeh
+seaborn
+sklearn
+imblearn
+torch
+urllib
+requests
+io
+types

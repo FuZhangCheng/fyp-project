@@ -5,11 +5,10 @@ from bokeh.plotting import figure
 import streamlit as st
 import sklearn, imblearn, torch
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.pipeline import Pipeline
 from sklearn.decomposition import PCA
-from preprocess_data import DataPreprocessor
-import urllib.request
+import urllib.request, requests
 from io import BytesIO
+from types import ModuleType
 
 def data_preprocess(data, numerical_columns = None, categorical_columns = None):
     # 1. Standardize the range of numerical features
@@ -50,6 +49,39 @@ def save_or_load_model(filename_or_io, model=None, action='load'):
 
     else:
         raise ValueError("Invalid action. Use 'save' or 'load.'")
+    
+def import_data_preprocessor_object(github_url):
+    """
+    Create a DataPreprocessor object from a Python script on GitHub.
+
+    Parameters:
+    - github_url (str): The raw GitHub URL of the Python script.
+
+    Returns:
+    - DataPreprocessor: An instance of the DataPreprocessor class.
+    """
+    # Send a GET request to fetch the raw content
+    response = requests.get(github_url)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Extract the content of the script
+        script_content = response.text
+
+        # Create a module and import the class dynamically
+        preprocessing_module = ModuleType('preprocessing_module')
+        exec(script_content, vars(preprocessing_module))
+
+        # Check if the DataPreprocessor class is defined in the module
+        if hasattr(preprocessing_module, 'DataPreprocessor'):
+            # Create an instance of the DataPreprocessor class
+            return preprocessing_module.DataPreprocessor
+        else:
+            print("DataPreprocessor class not found in the script.")
+            return None
+    else:
+        print(f"Failed to fetch script from GitHub. Status code: {response.status_code}")
+        return None
 
 st.sidebar.title("Machine Learning in Data Classification")
 
@@ -280,7 +312,7 @@ elif add_selectbox == "Model Training & Evaluation":
 else:
     st.header("5. Test Model")
 
-    option = st.selectbox("Please a model to test system: ", options=["Logistic Regression", "SVM", "KNN", "Naive Bayes", "Decision Tree", "Random Forest", "Deep Learning (ANN)"])
+    option = st.selectbox("Please choose a model to test system: ", options=["Logistic Regression", "SVM", "KNN", "Naive Bayes", "Decision Tree", "Random Forest", "Deep Learning (ANN)"])
 
     model_dict = {
         "Logistic Regression": "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/model/logistic.pkl",
@@ -315,8 +347,9 @@ else:
     st.write(record)
 
     # Load preprocess file
+    github_url = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/preprocess_data.py"
     data_preprocess_file = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/data_preprocessing/preprocessing_1.joblib"
-    preprocessor = DataPreprocessor()
+    preprocessor = import_data_preprocessor_object(github_url)()
     file_content = urllib.request.urlopen(data_preprocess_file).read()
     preprocessor.load((BytesIO(file_content)))
 

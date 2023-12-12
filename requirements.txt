@@ -12,3 +12,4 @@ imblearn
 torch
 urllib3
 requests
+altair<5

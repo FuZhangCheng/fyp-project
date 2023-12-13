@@ -34,7 +34,7 @@ This repository contains the code and resources for my Final Year Project (FYP).
   - `dataset_desc.txt`: Description of the dataset.
 
 - **evaluation**: Contains evaluation-related files.
-  - `eval_desc.txt`: Description of the evaluation process.
+  - `eval_desc.txt`: Description of the evaluation tables.
   - `test_evaluation.csv`: Evaluation results for the test set.
   - `train_evaluation.csv`: Evaluation results for the training set.
 
@@ -45,10 +45,10 @@ This repository contains the code and resources for my Final Year Project (FYP).
 - **image**: Contains images used in the project.
   - `heart.jpg`, `page-1.jpg`, `page-2.jpg`, `page-3.jpg`, `page-4.jpg`, `page-5.jpg`: Project-related images.
 
-- **streamlit_app.py**: Streamlit application for [brief description].
+- **streamlit_app.py**: Streamlit web application for Heart Disease Classification.
 
 - **FYP_notebook.ipynb**: Jupyter notebook containing the main project code.
 
-- **preprocess_data.py**: Script for data preprocessing.
+- **preprocess_data.py**: Script for defining data preprocessing object.
 
 - **requirements.txt**: List of Python dependencies.  

@@ -9,6 +9,7 @@ from sklearn.decomposition import PCA
 import urllib.request, requests
 from io import BytesIO
 from types import ModuleType
+from preprocess_data import DataPreprocessor
 
 def data_preprocess(data, numerical_columns = None, categorical_columns = None):
     # 1. Standardize the range of numerical features
@@ -347,9 +348,10 @@ else:
     st.write(record)
 
     # Load preprocess file
-    github_url = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/preprocess_data.py"
+    # github_url = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/preprocess_data.py"
     data_preprocess_file = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/data_preprocessing/preprocessing_1.joblib"
-    preprocessor = import_data_preprocessor_object(github_url)()
+    # preprocessor = import_data_preprocessor_object(github_url)()
+    preprocessor = DataPreprocessor()
     file_content = urllib.request.urlopen(data_preprocess_file).read()
     preprocessor.load((BytesIO(file_content)))
 

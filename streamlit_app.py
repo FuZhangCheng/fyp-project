@@ -51,6 +51,8 @@ def save_or_load_model(filename_or_io, model=None, action='load'):
     else:
         raise ValueError("Invalid action. Use 'save' or 'load.'")
 
+st.sidebar.image("image/heart.jpg")
+
 st.sidebar.title("Machine Learning in Data Classification")
 
 add_selectbox = st.sidebar.radio(

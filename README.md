@@ -52,3 +52,7 @@ This repository contains the code and resources for my Final Year Project (FYP).
 - **preprocess_data.py**: Script for defining data preprocessing object.
 
 - **requirements.txt**: List of Python dependencies.  
+
+### 5. Streamlit application (Screenshot)
+* **Data Description Page**: Provides an overview of the heart disease dataset, its source, basic statistics, and visualizations.
+![Data Description Page](image/page-1.jpg)

@@ -54,5 +54,13 @@ This repository contains the code and resources for my Final Year Project (FYP).
 - **requirements.txt**: List of Python dependencies.  
 
 ### 5. Streamlit application (Screenshot)
-* **Data Description Page**: Provides an overview of the heart disease dataset, its source, basic statistics, and visualizations.
-![Data Description Page](image/page-1.jpg)
+* **Data Description Page**: Provides an overview of the heart disease dataset, its source, basic statistics, and visualizations.  
+![Data Description Page](image/page-1.jpg)  
+* **Data Preprocessing Page**: Allows users to select features, preprocess data using standardization and one-hot encoding, and save the processed data.  
+![Data Preprocessing Page](image/page-2.jpg)  
+* **PCA (Principal Component Analysis) Page**: Enables users to perform PCA on uploaded data, showing the original and transformed datasets.  
+![PCA (Principal Component Analysis) Page](image/page-3.jpg)  
+* **Model Training & Evaluation Page**: Displays training and testing results for machine learning models, comparing accuracy with line plots.  
+![Model Training & Evaluation Page](image/page-4.jpg)  
+* **Test Model Page**: Lets users input health parameters, preprocesses the data, loads a selected model, and predicts the outcome.  
+![Test Model Page](image/page-5.jpg)  

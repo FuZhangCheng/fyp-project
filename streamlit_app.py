@@ -50,39 +50,6 @@ def save_or_load_model(filename_or_io, model=None, action='load'):
 
     else:
         raise ValueError("Invalid action. Use 'save' or 'load.'")
-    
-def import_data_preprocessor_object(github_url):
-    """
-    Create a DataPreprocessor object from a Python script on GitHub.
-
-    Parameters:
-    - github_url (str): The raw GitHub URL of the Python script.
-
-    Returns:
-    - DataPreprocessor: An instance of the DataPreprocessor class.
-    """
-    # Send a GET request to fetch the raw content
-    response = requests.get(github_url)
-
-    # Check if the request was successful (status code 200)
-    if response.status_code == 200:
-        # Extract the content of the script
-        script_content = response.text
-
-        # Create a module and import the class dynamically
-        preprocessing_module = ModuleType('preprocessing_module')
-        exec(script_content, vars(preprocessing_module))
-
-        # Check if the DataPreprocessor class is defined in the module
-        if hasattr(preprocessing_module, 'DataPreprocessor'):
-            # Create an instance of the DataPreprocessor class
-            return preprocessing_module.DataPreprocessor
-        else:
-            print("DataPreprocessor class not found in the script.")
-            return None
-    else:
-        print(f"Failed to fetch script from GitHub. Status code: {response.status_code}")
-        return None
 
 st.sidebar.title("Machine Learning in Data Classification")
 
@@ -348,9 +315,7 @@ else:
     st.write(record)
 
     # Load preprocess file
-    # github_url = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/preprocess_data.py"
     data_preprocess_file = "https://raw.githubusercontent.com/FuZhangCheng/fyp-project/main/data_preprocessing/preprocessing_1.joblib"
-    # preprocessor = import_data_preprocessor_object(github_url)()
     preprocessor = DataPreprocessor()
     file_content = urllib.request.urlopen(data_preprocess_file).read()
     preprocessor.load((BytesIO(file_content)))

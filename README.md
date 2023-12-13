@@ -18,6 +18,8 @@ Dataset: [Mendeley Heart Disease Dataset](https://data.mendeley.com/datasets/wmh
 * Random Forest
 * Deep Learning (ANN)  
 
-| Header 1 | Header 2 |
-|----------|----------|
-| Content 1| Content 2|
+#### 3. Libraries/Dependencies (requirements.txt)
+* Data Manipulation: [NumPy](https://numpy.org/doc/stable/), [Pandas](https://pandas.pydata.org/docs/)
+* Data Visualization: [Matplotlib](https://matplotlib.org/stable/index.html), [Seaborn](https://seaborn.pydata.org/api.html), [Bokeh](https://docs.bokeh.org/en/latest/)
+* Machine Learning: [Scikit-Learn](https://scikit-learn.org/stable/)
+* For others, please refer to the requirements.txt. [Instruction for setting up **requirements.txt**](https://docs.streamlit.io/streamlit-community-cloud/deploy-your-app/app-dependencies)

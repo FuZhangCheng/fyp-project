@@ -7,7 +7,7 @@ matplotlib
 klib
 bokeh
 seaborn
-scikit-learn==1.1.2
+scikit-learn==1.1.1
 imblearn
 torch
 urllib3

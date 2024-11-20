@@ -324,6 +324,9 @@ else:
 
     # Preprocess record
     preprocessed_record = preprocessor.transform(pd.DataFrame([record]))
+    preprocessed_record.columns = preprocessed_record.columns.astype(str)
+    preprocessed_record = preprocessed_record.values
+    
 
     st.text("Preprocessed data: ")
     st.table(preprocessed_record)
